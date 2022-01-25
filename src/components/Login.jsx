@@ -11,7 +11,9 @@ const Login = () => {
 
   return (
     <div
-      className={singUp > 0 ? "container right-panel-active" : "container"}
+      className={
+        singUp > 0 ? "container py-5 right-panel-active" : "container py-5"
+      }
       id="container"
     >
       <div className="form-container sing-up-container">
@@ -50,6 +52,7 @@ const Login = () => {
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2));
+              console.log(JSON.stringify(values, null, 2));
               setSubmitting(false);
             }, 400);
           }}
@@ -64,7 +67,7 @@ const Login = () => {
             isSubmitting,
             /* and other goodies */
           }) => (
-            <form onSubmit={handleSubmit} action="">
+            <form onSubmit={handleSubmit} className="py-3" action="">
               <h1>Create Account</h1>
               <div className="social-container">
                 <a href="" className="social">
@@ -84,7 +87,9 @@ const Login = () => {
                 name="name"
                 placeholder="Name"
                 className={
-                  errors.name ? errors.invalidClass : "form-control is-valid"
+                  errors.name && touched.name && errors.name
+                    ? errors.invalidClass
+                    : "form-control is-valid"
                 }
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -100,14 +105,16 @@ const Login = () => {
                 onBlur={handleBlur}
                 value={values.email}
                 className={
-                  errors.email ? errors.invalidClass : "form-control is-valid"
+                  errors.email && touched.email && errors.email
+                    ? errors.invalidClass
+                    : "form-control is-valid"
                 }
               />
               {errors.email && touched.email && errors.email}
               {/* // !password */}
               <input
                 className={
-                  errors.password
+                  errors.password && touched.password && errors.password
                     ? errors.invalidClass
                     : "form-control is-valid"
                 }
@@ -119,7 +126,7 @@ const Login = () => {
                 value={values.password}
               />
               {errors.password && touched.password && errors.password}
-              <button type="submit" className="mt-2" disabled={isSubmitting}>
+              <button type="submit" className="my-2" disabled={isSubmitting}>
                 Sing Up
               </button>
             </form>
@@ -133,16 +140,27 @@ const Login = () => {
             const errors = {};
             if (!values.email) {
               errors.email = "Required";
+              errors.invalidClass = "is-invalid";
             } else if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
               errors.email = "Invalid email address";
+              errors.invalidClass = "is-invalid";
+            }
+            if (!values.password) {
+              errors.password = "Required";
+              errors.invalidClass = "form-control is-invalid";
+            }
+            if (values.password.length < 3 && values.password.length > 0) {
+              errors.password = "is short";
+              errors.invalidClass = "form-control is-invalid";
             }
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2));
+              console.log(JSON.stringify(values, null, 2));
               setSubmitting(false);
             }, 400);
           }}
@@ -172,20 +190,34 @@ const Login = () => {
               </div>
               <span>or use your account</span>
               <input
-                className="form-control"
-                placeholder="Email"
                 type="email"
                 name="email"
+                placeholder="Email"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.email}
+                className={
+                  errors.email && touched.email && errors.email
+                    ? errors.invalidClass
+                    : "form-control is-valid"
+                }
               />
+              {errors.email && touched.email && errors.email}
               <input
-                type="password"
-                className="form-control"
+                className={
+                  errors.password && touched.password && errors.password
+                    ? errors.invalidClass
+                    : "form-control is-valid"
+                }
                 placeholder="Password"
+                type="password"
+                name="password"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
               />
-              <button>Sing In</button>
+              {errors.password && touched.password && errors.password}
+              <button className="my-2">Sing In</button>
             </form>
           )}
         </Formik>
