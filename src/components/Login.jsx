@@ -16,15 +16,34 @@ const Login = () => {
     >
       <div className="form-container sing-up-container">
         <Formik
-          initialValues={{ email: "", password: "" , name: "" }}
+          initialValues={{
+            email: "",
+            password: "",
+            name: "",
+            invalidClass: "",
+          }}
           validate={(values) => {
             const errors = {};
             if (!values.email) {
               errors.email = "Required";
+              errors.invalidClass = "is-invalid";
             } else if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
               errors.email = "Invalid email address";
+              errors.invalidClass = "is-invalid";
+            }
+            if (!values.name) {
+              errors.name = "Required";
+              errors.invalidClass = "form-control is-invalid";
+            }
+            if (!values.password) {
+              errors.password = "Required";
+              errors.invalidClass = "form-control is-invalid";
+            }
+            if (values.password.length < 3 && values.password.length > 0) {
+              errors.password = "is short";
+              errors.invalidClass = "form-control is-invalid";
             }
             return errors;
           }}
@@ -59,9 +78,20 @@ const Login = () => {
                 </a>
               </div>
               <span>Or use your email for Registration</span>
-
-              <input type="text" className="form-control" placeholder="Name" />
-
+              {/* // !name */}
+              <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                className={
+                  errors.name ? errors.invalidClass : "form-control is-valid"
+                }
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.name}
+              />
+              {errors.name && touched.name && errors.name}
+              {/* // !email */}
               <input
                 type="email"
                 name="email"
@@ -70,17 +100,16 @@ const Login = () => {
                 onBlur={handleBlur}
                 value={values.email}
                 className={
-                  (errors.email ? "form-control is-invalid" : "form-control",
-                  touched.email ? "form-control is-invalid" : "form-control")
+                  errors.email ? errors.invalidClass : "form-control is-valid"
                 }
               />
-              {/* {errors.email && touched.email && errors.email} */}
-              <div class="valid-feedback">Looks good!</div>
-              <div class="invalid-feedback">please enter email</div>
+              {errors.email && touched.email && errors.email}
+              {/* // !password */}
               <input
                 className={
-                  (errors.password ? "form-control is-invalid" : "form-control",
-                  touched.password ? "form-control is-invalid" : "form-control")
+                  errors.password
+                    ? errors.invalidClass
+                    : "form-control is-valid"
                 }
                 placeholder="Password"
                 type="password"
@@ -89,9 +118,7 @@ const Login = () => {
                 onBlur={handleBlur}
                 value={values.password}
               />
-              {/* {errors.password && touched.password && errors.password} */}
-              <div className="valid-feedback">Looks good!</div>
-              <div className="invalid-feedback">please enter email</div>
+              {errors.password && touched.password && errors.password}
               <button type="submit" className="mt-2" disabled={isSubmitting}>
                 Sing Up
               </button>
