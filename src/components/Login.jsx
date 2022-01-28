@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
+import axios from "axios";
 
 // * icons
 import { FaGoogle, FaFacebookF, FaGithub } from "react-icons/fa";
 
-// *global class
+// *sweet alert
+import swal from "sweetalert";
 
 const Login = () => {
   const [singUp, setSignUp] = useState(0);
@@ -26,6 +28,10 @@ const Login = () => {
           }}
           validate={(values) => {
             const errors = {};
+            if (!values.name) {
+              errors.name = "Required";
+              errors.invalidClass = "form-control is-invalid";
+            }
             if (!values.email) {
               errors.email = "Required";
               errors.invalidClass = "is-invalid";
@@ -34,10 +40,6 @@ const Login = () => {
             ) {
               errors.email = "Invalid email address";
               errors.invalidClass = "is-invalid";
-            }
-            if (!values.name) {
-              errors.name = "Required";
-              errors.invalidClass = "form-control is-invalid";
             }
             if (!values.password) {
               errors.password = "Required";
@@ -51,8 +53,24 @@ const Login = () => {
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
+              swal(
+                "Signed up!",
+                "Created account successfully! Please Login",
+                "success"
+              );
               console.log(JSON.stringify(values, null, 2));
+              const data = {
+                email: values.email,
+                password: values.password,
+                name: values.name,
+              };
+              console.log(data);
+              console.log(values.email);
+              console.log(values.password);
+              console.log(values.name);
+              axios
+                .post("https://jsonplaceholder.typicode.com/posts/", data)
+                .then((response) => console.log(response.status))
               setSubmitting(false);
             }, 400);
           }}
@@ -159,7 +177,7 @@ const Login = () => {
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
+              swal("Signed in!", "Login successfully! Please Wait", "success");
               console.log(JSON.stringify(values, null, 2));
               setSubmitting(false);
             }, 400);
@@ -217,7 +235,9 @@ const Login = () => {
                 value={values.password}
               />
               {errors.password && touched.password && errors.password}
-              <button className="my-2">Sing In</button>
+              <button className="my-2" type="submit" disabled={isSubmitting}>
+                Sing In
+              </button>
             </form>
           )}
         </Formik>
