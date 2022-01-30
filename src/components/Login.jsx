@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
-import axios from "axios";
 
 // * icons
 import { FaGoogle, FaFacebookF, FaGithub } from "react-icons/fa";
@@ -10,6 +9,27 @@ import swal from "sweetalert";
 
 const Login = () => {
   const [singUp, setSignUp] = useState(0);
+  const [register, setRegister] = useState([]);
+
+  useEffect(() => {
+    console.log(register.status);
+    console.log(register.message);
+    if (register.success === true) {
+      const myAlert = register.message;
+      swal("Good job!", myAlert, "success");
+      console.log("true");
+    }
+    if (register.success === false) {
+      const myAlert = register.message;
+      swal("Error!", myAlert, "error");
+      console.log("false");
+    }
+    if (!register) {
+      // const myAlert = register.message;
+      // swal("Error!", "plea", "error");
+      console.log("is empty");
+    }
+  }, [register]);
 
   return (
     <div
@@ -45,32 +65,66 @@ const Login = () => {
               errors.password = "Required";
               errors.invalidClass = "form-control is-invalid";
             }
-            if (values.password.length < 3 && values.password.length > 0) {
+            if (values.password.length < 8 && values.password.length > 0) {
               errors.password = "is short";
+              errors.invalidClass = "form-control is-invalid";
+            }
+            if (values.password.length > 16) {
+              errors.password = "is Long";
               errors.invalidClass = "form-control is-invalid";
             }
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
-              swal(
-                "Signed up!",
-                "Created account successfully! Please Login",
-                "success"
-              );
+              // !text message for status here
               console.log(JSON.stringify(values, null, 2));
               const data = {
+                name: values.name,
                 email: values.email,
                 password: values.password,
-                name: values.name,
               };
               console.log(data);
+              console.log(values.name);
               console.log(values.email);
               console.log(values.password);
-              console.log(values.name);
-              axios
-                .post("https://jsonplaceholder.typicode.com/posts/", data)
-                .then((response) => console.log(response.status))
+              fetch("https://api.freerealapi.com/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name: data.name,
+                  email: data.email,
+                  password: data.password,
+                }),
+              })
+                // ! bug is here
+                .then((response) => response.json())
+                .then((json) => {
+                  console.log(json);
+                  return json;
+                })
+                .then((json) => {
+                  setRegister(json);
+                  console.log(json);
+                  // swal(
+                  //   register &&
+                  //     ("Signed up!",
+                  //     "Created account successfully! Please Login",
+                  //     "success")
+                  // );
+                  // swal.fire(
+                  //   !register &&
+                  //     ("Signed up!",
+                  //     "Created account successfully! Please Login",
+                  //     "success")
+                  // );
+                  // swal(
+                  //   ("Signed up!",
+                  //   "Created account successfully! Please Login",
+                  //   "success")
+                  // );
+                });
+              console.log("hi");
               setSubmitting(false);
             }, 400);
           }}
@@ -128,6 +182,11 @@ const Login = () => {
                     : "form-control is-valid"
                 }
               />
+              {/* {
+                (console.log(register),
+                console.log(register.status),
+                console.log(register.message))
+              } */}
               {errors.email && touched.email && errors.email}
               {/* // !password */}
               <input
@@ -169,8 +228,12 @@ const Login = () => {
               errors.password = "Required";
               errors.invalidClass = "form-control is-invalid";
             }
-            if (values.password.length < 3 && values.password.length > 0) {
+            if (values.password.length < 8 && values.password.length > 0) {
               errors.password = "is short";
+              errors.invalidClass = "form-control is-invalid";
+            }
+            if (values.password.length > 16) {
+              errors.password = "is Long";
               errors.invalidClass = "form-control is-invalid";
             }
             return errors;
