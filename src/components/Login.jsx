@@ -30,7 +30,16 @@ const Login = () => {
       // swal("Error!", "plea", "error");
       console.log("is empty");
     }
-  }, [register]);
+    if(login.token === true) {
+      const myAlert = "Logged in successfully";
+      swal("Good job!", myAlert, "success");
+      console.log("true");
+    } else{
+      const myAlert = "Login is error";
+      swal("Error!", myAlert, "error");
+      console.log("false");
+    }
+  }, [register, login]);
 
   return (
     <div
