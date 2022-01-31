@@ -30,14 +30,10 @@ const Login = () => {
       // swal("Error!", "plea", "error");
       console.log("is empty");
     }
-    if(login.token === true) {
+    if (login.success) {
       const myAlert = "Logged in successfully";
       swal("Good job!", myAlert, "success");
       console.log("true");
-    } else{
-      const myAlert = "Login is error";
-      swal("Error!", myAlert, "error");
-      console.log("false");
     }
   }, [register, login]);
 
@@ -117,7 +113,7 @@ const Login = () => {
                   setRegister(json);
                   console.log(json);
                 });
-              console.log("hi");
+              console.log("hi register");
               setSubmitting(false);
             }, 400);
           }}
@@ -249,7 +245,7 @@ const Login = () => {
               // })
               //   .then((response) => response.json())
               //   .then((json) => console.log(json));
-              fetch("http://localhost:3300/auth/login", {
+              fetch("http://api.freerealapi.com/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -258,7 +254,15 @@ const Login = () => {
                 }),
               })
                 .then((response) => response.json())
-                .then((json) => console.log(json));
+                .then((json) => {
+                  console.log(json);
+                  return json;
+                })
+                .then((json) => {
+                  setLogin(json);
+                  console.log(json);
+                });
+              console.log("hi login");
               setSubmitting(false);
             }, 400);
           }}
@@ -322,7 +326,6 @@ const Login = () => {
           )}
         </Formik>
       </div>
-
       <div className="overlay-container">
         <div className="overlay">
           <div className="overlay-panel overlay-left">
