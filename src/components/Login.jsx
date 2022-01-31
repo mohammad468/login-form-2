@@ -10,6 +10,7 @@ import swal from "sweetalert";
 const Login = () => {
   const [singUp, setSignUp] = useState(0);
   const [register, setRegister] = useState([]);
+  const [login, setLogin] = useState([]);
 
   useEffect(() => {
     console.log(register.status);
@@ -106,23 +107,6 @@ const Login = () => {
                 .then((json) => {
                   setRegister(json);
                   console.log(json);
-                  // swal(
-                  //   register &&
-                  //     ("Signed up!",
-                  //     "Created account successfully! Please Login",
-                  //     "success")
-                  // );
-                  // swal.fire(
-                  //   !register &&
-                  //     ("Signed up!",
-                  //     "Created account successfully! Please Login",
-                  //     "success")
-                  // );
-                  // swal(
-                  //   ("Signed up!",
-                  //   "Created account successfully! Please Login",
-                  //   "success")
-                  // );
                 });
               console.log("hi");
               setSubmitting(false);
@@ -240,8 +224,32 @@ const Login = () => {
           }}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
-              swal("Signed in!", "Login successfully! Please Wait", "success");
               console.log(JSON.stringify(values, null, 2));
+              const data = {
+                email: values.email,
+                password: values.password,
+              };
+              console.log(data);
+              // fetch("http://localhost:3300/auth/login", {
+              //   method: "POST",
+              //   headers: { "Content-Type": "application/json" },
+              //   body: JSON.stringify({
+              //     email: data.email,
+              //     password: data.password,
+              //   }),
+              // })
+              //   .then((response) => response.json())
+              //   .then((json) => console.log(json));
+              fetch("http://localhost:3300/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: "mamalimooh@gmail.com",
+                  password: "123456789",
+                }),
+              })
+                .then((response) => response.json())
+                .then((json) => console.log(json));
               setSubmitting(false);
             }, 400);
           }}
